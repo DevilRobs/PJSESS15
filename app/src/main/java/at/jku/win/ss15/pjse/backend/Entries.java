@@ -5,8 +5,12 @@ import org.joda.time.DurationFieldType;
 import org.joda.time.Period;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A utility class for several operations related to {@code Entry} as well as {@link java.util.List}s containing these objects.
@@ -23,7 +27,7 @@ public class Entries {
      * will be returned which may also be a negative value.
      * @throws java.sql.SQLException if an error occurs during retrieving necessary data from the the database
      */
-    public static BigDecimal availableBudget(Category c, DataProvider provider, Date from, Date to) throws SQLException {
+    public static BigDecimal availableBudget(Category c, DataProvider provider, Date from, Date to) throws DataProvider.DataProviderException {
         if (c.getBudget() == null)
             return null;
         List<Entry> entries = ensureListIsModifyable(provider.getAllEntries(c));

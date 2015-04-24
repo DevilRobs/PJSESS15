@@ -1,7 +1,6 @@
 package at.jku.win.ss15.pjse.backend;
 
 
-
 import java.sql.SQLException;
 import java.util.List;
 
@@ -9,12 +8,6 @@ import java.util.List;
  * The <code> DataProvider </code> provides operations for database access, as well as setting up the database itself.
  */
 public interface DataProvider {
-    /**
-     * Initialises the database.
-     *
-     * @throws java.sql.SQLException if raised during database access
-     */
-    void initDB() throws SQLException;
 
     /**
      * Gets all the saved categories.
@@ -22,7 +15,7 @@ public interface DataProvider {
      * @return a {@link java.util.List} of type {@link at.jku.win.ss15.pjse.backend.Category}
      * @throws java.sql.SQLException if raised during database operation
      */
-    List<Category> getAllCategories() throws SQLException;
+    List<Category> getAllCategories() throws DataProviderException;
 
     /**
      * Gets all entries for a specific category.
@@ -31,7 +24,7 @@ public interface DataProvider {
      * @return a {@link java.util.List} containing the entries
      * @throws java.sql.SQLException if raised during database access
      */
-    List<Entry> getAllEntries(String categoryName) throws SQLException;
+    List<Entry> getAllEntries(String categoryName) throws DataProviderException;
 
     /**
      * Gets a specific category, identified by a name.
@@ -40,7 +33,7 @@ public interface DataProvider {
      * @return the category identified by a string
      * @throws java.sql.SQLException if raised during a database access
      */
-    Category getCategory(String name) throws SQLException;
+    Category getCategory(String name) throws DataProviderException;
 
     /**
      * Gets all entries from a specific category.
@@ -49,7 +42,7 @@ public interface DataProvider {
      * @return the entries in the specified category
      * @throws java.sql.SQLException
      */
-    List<Entry> getAllEntries(Category category) throws SQLException;
+    List<Entry> getAllEntries(Category category) throws DataProviderException;
 
     /**
      * Adds a new {@link at.jku.win.ss15.pjse.backend.BudgetChangedListener} .
@@ -57,7 +50,7 @@ public interface DataProvider {
      * @param l
      * @throws java.sql.SQLException if raised during database access
      */
-    void addBudgetChangedListener(BudgetChangedListener l) throws SQLException;
+    void addBudgetChangedListener(BudgetChangedListener l) throws DataProviderException;
 
     /**
      * Removes a new {@link BudgetChangedListener} .
@@ -65,7 +58,7 @@ public interface DataProvider {
      * @param l
      * @throws java.sql.SQLException if raised during database access
      */
-    void removeBudgetChangedListener(BudgetChangedListener l) throws SQLException;
+    void removeBudgetChangedListener(BudgetChangedListener l) throws DataProviderException;
 
     /**
      * Adds a {@link at.jku.win.ss15.pjse.backend.Category} to the database.
@@ -73,7 +66,7 @@ public interface DataProvider {
      * @param c the category to be added
      * @throws java.sql.SQLException if raised during database operation
      */
-    void addCategory(Category c) throws SQLException;
+    void addCategory(Category c) throws DataProviderException;
 
     /**
      * Removes a {@link at.jku.win.ss15.pjse.backend.Category} from the database
@@ -81,7 +74,7 @@ public interface DataProvider {
      * @param c the category to be removed
      * @throws java.sql.SQLException if raised during database operation
      */
-    void removeCategory(Category c) throws SQLException;
+    void removeCategory(Category c) throws DataProviderException;
 
     /**
      * Removes a {@link at.jku.win.ss15.pjse.backend.Category} from the database, identified by a String.
@@ -89,7 +82,7 @@ public interface DataProvider {
      * @param categoryName the category's name
      * @throws java.sql.SQLException - if raised during database operation
      */
-    void removeCategory(String categoryName) throws SQLException;
+    void removeCategory(String categoryName) throws DataProviderException;
 
     /**
      * Updates a {@link at.jku.win.ss15.pjse.backend.Category} in the database.
@@ -97,7 +90,7 @@ public interface DataProvider {
      * @param c the category to be updated
      * @throws java.sql.SQLException if raised during database operation
      */
-    void updateCategory(Category c) throws SQLException;
+    void updateCategory(Category c) throws DataProviderException;
 
     /**
      * Adds a new {@link Entry} to the database.
@@ -105,7 +98,7 @@ public interface DataProvider {
      * @param e the entry to be added
      * @throws java.sql.SQLException if raised during database operation
      */
-    void addEntry(Entry e) throws SQLException;
+    void addEntry(Entry e) throws DataProviderException;
 
     /**
      * Removes an {@link Entry} from the database.
@@ -113,7 +106,7 @@ public interface DataProvider {
      * @param e the entry to be removed
      * @throws java.sql.SQLException
      */
-    void removeEntry(Entry e) throws SQLException;
+    void removeEntry(Entry e) throws DataProviderException;
 
     /**
      * Updates a specific {@link Entry}.<br>
@@ -123,6 +116,16 @@ public interface DataProvider {
      * @param newEntry the updated entry to be written in the database
      * @throws java.sql.SQLException if raised during database operation
      */
-    void updateEntry(Entry oldEntry, Entry newEntry) throws SQLException;
+    void updateEntry(Entry oldEntry, Entry newEntry) throws DataProviderException;
+
+    public static class DataProviderException extends Exception {
+        public DataProviderException(String errorMessage) {
+            super(errorMessage);
+        }
+
+        public DataProviderException(String errorMessage, Exception cause) {
+            super(errorMessage, cause);
+        }
+    }
 
 }

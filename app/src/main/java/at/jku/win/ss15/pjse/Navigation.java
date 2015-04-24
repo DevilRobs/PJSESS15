@@ -1,22 +1,21 @@
 package at.jku.win.ss15.pjse;
 
 import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.Gravity;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
+
+import java.io.File;
 
 
 public class Navigation extends ActionBarActivity
@@ -31,6 +30,22 @@ public class Navigation extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+
+    private static File f = null;
+
+    public static File getDBFile(Activity a) {
+        return getDBFile(a.getApplicationContext());
+    }
+
+    public static File getDBFile(Context c) {
+        if (f == null) {
+            File folder = c.getFilesDir();
+            if (!folder.exists())
+                folder.mkdirs();
+            f = new File(folder, "data.base");
+        }
+        return f;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

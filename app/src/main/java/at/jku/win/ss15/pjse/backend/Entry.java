@@ -1,5 +1,6 @@
 package at.jku.win.ss15.pjse.backend;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -8,7 +9,7 @@ import java.util.Date;
  * An <code>Entry</code> can occur repeatedly and the location where the entry was/should added
  * can be stored as well.
  */
-public class Entry {
+public class Entry implements Serializable {
     private BigDecimal value; //(10,2)
     private String purpose, category;
     private Float locLat, locLng;
@@ -16,6 +17,13 @@ public class Entry {
     private IntervalType intervalType;
     private Date startTime, endTime, intervalEndTime;
     private Entry parent;
+
+    /**
+     * Do not use this constructor
+     */
+    @Deprecated
+    public Entry() {
+    }
 
     /**
      * An entry can be added to a {@link Category}, which can change the budget (left) for the category.
@@ -54,14 +62,13 @@ public class Entry {
     }
 
     /**
-     *
      * @param parent Gets the parent element, if exists
      * @return null if no parent element exists or an entry
      */
     public Entry setParent(Entry parent) {
         Entry e = new Entry(this);
         e.parent = parent;
-        return  e;
+        return e;
     }
 
     private Entry(Entry e) {

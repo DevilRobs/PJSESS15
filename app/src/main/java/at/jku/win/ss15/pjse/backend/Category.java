@@ -1,15 +1,23 @@
 package at.jku.win.ss15.pjse.backend;
 
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  * A {@code Category} defines a section and a currency on which expenditures can be spent on.
  */
-public class Category {
-    private final String name;
+public class Category implements Serializable {
+    private String name;
     private BigDecimal budget;
-    private final Currency currency;
+    private Currency currency;
+
+    /**
+     * Do bot use this method!
+     */
+    @Deprecated
+    public Category() {
+    }
 
     /**
      * Creates a new category to be used within the data base.

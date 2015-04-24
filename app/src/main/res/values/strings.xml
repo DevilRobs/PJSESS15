@@ -8,7 +8,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_example">Example action</string>
-
+    <string name="action_example">Create example category</string>
     <string name="action_settings">Settings</string>
+    <string name="addExpensure">Add expensure</string>
+    <string name="add_widget">Add widget</string>
 </resources>
