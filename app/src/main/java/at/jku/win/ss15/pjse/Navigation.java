@@ -31,21 +31,6 @@ public class Navigation extends ActionBarActivity
      */
     private CharSequence mTitle;
 
-    private static File f = null;
-
-    public static File getDBFile(Activity a) {
-        return getDBFile(a.getApplicationContext());
-    }
-
-    public static File getDBFile(Context c) {
-        if (f == null) {
-            File folder = c.getFilesDir();
-            if (!folder.exists())
-                folder.mkdirs();
-            f = new File(folder, "data.base");
-        }
-        return f;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

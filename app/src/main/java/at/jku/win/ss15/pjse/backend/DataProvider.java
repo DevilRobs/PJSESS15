@@ -118,6 +118,12 @@ public interface DataProvider {
      */
     void updateEntry(Entry oldEntry, Entry newEntry) throws DataProviderException;
 
+    /**
+     * Should delete all Data
+     * @throws DataProviderException
+     */
+    void reset() throws DataProviderException;
+
     public static class DataProviderException extends Exception {
         public DataProviderException(String errorMessage) {
             super(errorMessage);

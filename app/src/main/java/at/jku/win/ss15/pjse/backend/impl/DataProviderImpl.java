@@ -2,6 +2,7 @@ package at.jku.win.ss15.pjse.backend.impl;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 
@@ -29,8 +30,12 @@ public class DataProviderImpl implements DataProvider {
     private final Gson gson = new Gson();
 
     public static DataProvider getInstance(Activity a) {
+        return getInstance(a.getApplicationContext());
+    }
+
+    public static DataProvider getInstance(Context context) {
         if (instance == null)
-            instance = new DataProviderImpl(a);
+            instance = new DataProviderImpl(context);
         return instance;
     }
 
@@ -43,11 +48,11 @@ public class DataProviderImpl implements DataProvider {
 
     private static final String CATEGORIES = "CATEGORIES";
 
-    public DataProviderImpl(Activity a) {
+    private DataProviderImpl(Context a) {
         this(a.getSharedPreferences("cat", 0), a.getSharedPreferences("ent", 0), a.getSharedPreferences("catEnt", 0));
     }
 
-    public DataProviderImpl(SharedPreferences cat, SharedPreferences entries, SharedPreferences catEntRef) {
+    private DataProviderImpl(SharedPreferences cat, SharedPreferences entries, SharedPreferences catEntRef) {
         catSettings = cat;
         entSettings = entries;
         catEntRelation = catEntRef;
@@ -144,7 +149,7 @@ public class DataProviderImpl implements DataProvider {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            editor.commit();
+            editor.apply();
         }
     }
 
@@ -159,7 +164,7 @@ public class DataProviderImpl implements DataProvider {
         Set<String> set = catSettings.getStringSet(CATEGORIES, Collections.<String>emptySet());
         set.remove(getCategory(categoryName));
 
-        getCategoryEditor().remove(categoryName).putStringSet(CATEGORIES, set).commit();
+        getCategoryEditor().remove(categoryName).putStringSet(CATEGORIES, set).apply();
     }
 
     @Override
@@ -171,7 +176,7 @@ public class DataProviderImpl implements DataProvider {
             throw new DataProviderException("Category not found!", e);
         }
         try {
-            getCategoryEditor().putString(c.getName(), seralizeObject(c)).commit();
+            getCategoryEditor().putString(c.getName(), seralizeObject(c)).apply();
         } catch (IOException e) {
             throw new DataProviderException("Update could not be performed!");
         }
@@ -188,7 +193,7 @@ public class DataProviderImpl implements DataProvider {
         if (entSettings.getString(id, null) != null)
             throw new DataProviderException("This entry already exists in the database");
         try {
-            getEntryEditor().putString(id, seralizeObject(e)).commit();
+            getEntryEditor().putString(id, seralizeObject(e)).apply();
         } catch (IOException e1) {
             throw new DataProviderException("Entry could not be added!", e1);
         }
@@ -196,13 +201,20 @@ public class DataProviderImpl implements DataProvider {
 
     @Override
     public void removeEntry(Entry e) throws DataProviderException {
-        getEntryEditor().remove(getIDfrom(e)).commit();
+        getEntryEditor().remove(getIDfrom(e)).apply();
     }
 
     @Override
     public void updateEntry(Entry oldEntry, Entry newEntry) throws DataProviderException {
         removeEntry(oldEntry);
         addEntry(newEntry);
+    }
+
+    @Override
+    public void reset() throws DataProviderException {
+        getEntryEditor().clear().apply();
+        getCategoryEditor().clear().apply();
+        getCategoryEntryEditor().clear().apply();
     }
 
 
