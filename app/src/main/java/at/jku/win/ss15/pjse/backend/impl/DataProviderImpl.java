@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 
-import com.google.gson.Gson;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,7 +25,6 @@ import at.jku.win.ss15.pjse.backend.Entry;
 public class DataProviderImpl implements DataProvider {
 
     private static DataProvider instance = null;
-    private final Gson gson = new Gson();
 
     public static DataProvider getInstance(Activity a) {
         return getInstance(a.getApplicationContext());
@@ -44,7 +41,6 @@ public class DataProviderImpl implements DataProvider {
             instance = new DataProviderImpl(a, b, c);
         return instance;
     }
-
 
     private static final String CATEGORIES = "CATEGORIES";
 
@@ -78,7 +74,7 @@ public class DataProviderImpl implements DataProvider {
         Set<String> set = catSettings.getStringSet(CATEGORIES, Collections.<String>emptySet());
         for (String s : set) {
             try {
-                list.add(deseralizeObject(catSettings.getString(s, null), Category.class));
+                list.add(GsonHelper.deseralizeObject(catSettings.getString(s, null), Category.class));
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -92,7 +88,7 @@ public class DataProviderImpl implements DataProvider {
         Set<String> set = catEntRelation.getStringSet(categoryName, Collections.<String>emptySet());
         for (String s : set) {
             try {
-                entries.add(deseralizeObject(entSettings.getString(s, null), Entry.class));
+                entries.add(GsonHelper.deseralizeObject(entSettings.getString(s, null), Entry.class));
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -103,7 +99,7 @@ public class DataProviderImpl implements DataProvider {
     @Override
     public Category getCategory(String name) throws DataProviderException {
         try {
-            return deseralizeObject(catSettings.getString(name, null), Category.class);
+            return GsonHelper.deseralizeObject(catSettings.getString(name, null), Category.class);
         } catch (ClassNotFoundException | IOException e) {
             e.printStackTrace();
             return null;
@@ -118,14 +114,14 @@ public class DataProviderImpl implements DataProvider {
     List<BudgetChangedListener> budgetChangedListeners = null;
 
     @Override
-    public void addBudgetChangedListener(BudgetChangedListener l) throws DataProviderException {
+    public void addBudgetChangedListener(BudgetChangedListener l) {
         if (budgetChangedListeners == null)
             budgetChangedListeners = new ArrayList<>();
         budgetChangedListeners.add(l);
     }
 
     @Override
-    public void removeBudgetChangedListener(BudgetChangedListener l) throws DataProviderException {
+    public void removeBudgetChangedListener(BudgetChangedListener l) {
         if (budgetChangedListeners != null)
             budgetChangedListeners.remove(l);
     }
@@ -143,7 +139,7 @@ public class DataProviderImpl implements DataProvider {
             if (allCategories.contains(c.getName()))
                 throw new DataProviderException("A category with this name already exists!");
 
-            editor.putString(c.getName(), seralizeObject(c));
+            editor.putString(c.getName(), GsonHelper.seralizeObject(c));
             allCategories.add(c.getName());
             editor.putStringSet(CATEGORIES, allCategories);
         } catch (IOException e) {
@@ -171,19 +167,19 @@ public class DataProviderImpl implements DataProvider {
     public void updateCategory(Category c) throws DataProviderException {
         Category old;
         try {
-            old = deseralizeObject(catSettings.getString(c.getName(), null), Category.class);
+            old = GsonHelper.deseralizeObject(catSettings.getString(c.getName(), null), Category.class);
         } catch (IOException | ClassNotFoundException | ClassCastException e) {
             throw new DataProviderException("Category not found!", e);
         }
         try {
-            getCategoryEditor().putString(c.getName(), seralizeObject(c)).apply();
+            getCategoryEditor().putString(c.getName(), GsonHelper.seralizeObject(c)).apply();
         } catch (IOException e) {
             throw new DataProviderException("Update could not be performed!");
         }
         BigDecimal bo = old.getBudget(), bn = c.getBudget();
         Date now = new Date(System.currentTimeMillis());
         for (BudgetChangedListener l : budgetChangedListeners)
-            l.budgetChanged(now, bo, bn);
+            l.budgetChanged(c.getName(), now, bo, bn);
 
     }
 
@@ -193,7 +189,7 @@ public class DataProviderImpl implements DataProvider {
         if (entSettings.getString(id, null) != null)
             throw new DataProviderException("This entry already exists in the database");
         try {
-            getEntryEditor().putString(id, seralizeObject(e)).apply();
+            getEntryEditor().putString(id, GsonHelper.seralizeObject(e)).apply();
         } catch (IOException e1) {
             throw new DataProviderException("Entry could not be added!", e1);
         }
@@ -217,20 +213,11 @@ public class DataProviderImpl implements DataProvider {
         getCategoryEntryEditor().clear().apply();
     }
 
-
-    private String seralizeObject(Object o) throws IOException {
-       /* ByteArrayOutputStream os = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(os);
-        oos.writeObject(o);
-        oos.close();
-        return os.toString(String.valueOf(StandardCharsets.UTF_8));*/
-        return gson.toJson(o);
+    @Override
+    public boolean hasListeners() {
+        return budgetChangedListeners != null && !budgetChangedListeners.isEmpty();
     }
 
-    private <T> T deseralizeObject(String o, Class<T> tClass) throws IOException, ClassNotFoundException {
-        // return new ObjectInputStream(new ByteArrayInputStream(o.getBytes(String.valueOf(StandardCharsets.UTF_8)))).readObject();
-        return gson.fromJson(o, tClass);
-    }
 
     private String getIDfrom(Entry e) {
         return Integer.toHexString(e.hashCode());

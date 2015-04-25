@@ -12,6 +12,7 @@ public class BackendData implements Serializable {
 
     public List<Entry> entries;
     public List<Category> categories;
+    public List<BudgetChangedListener.LogItem> logItems;
 
     public String export() {
         return exportBackendData(this);
@@ -35,7 +36,7 @@ public class BackendData implements Serializable {
             provider.addEntry(e);
     }
 
-    public static BackendData fromDataProvider(DataProvider dataProvider) throws DataProvider.DataProviderException {
+    public static BackendData fromBackend(DataProvider dataProvider, BudgetChangedListener listener) throws DataProvider.DataProviderException {
         BackendData data = new BackendData();
         data.categories = dataProvider.getAllCategories();
         data.entries = new ArrayList<>();
@@ -43,6 +44,11 @@ public class BackendData implements Serializable {
             data.entries.addAll(dataProvider.getAllEntries(category));
         data.categories = Collections.unmodifiableList(data.categories);
         data.entries = Collections.unmodifiableList(data.entries);
+        try {
+            data.logItems = Collections.unmodifiableList(listener.getAllChanges());
+        } catch (UnsupportedOperationException uoe) {
+            data.logItems = null;
+        }
         return data;
     }
 }

@@ -1,7 +1,6 @@
 package at.jku.win.ss15.pjse.backend;
 
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -50,7 +49,7 @@ public interface DataProvider {
      * @param l
      * @throws java.sql.SQLException if raised during database access
      */
-    void addBudgetChangedListener(BudgetChangedListener l) throws DataProviderException;
+    void addBudgetChangedListener(BudgetChangedListener l);
 
     /**
      * Removes a new {@link BudgetChangedListener} .
@@ -58,7 +57,7 @@ public interface DataProvider {
      * @param l
      * @throws java.sql.SQLException if raised during database access
      */
-    void removeBudgetChangedListener(BudgetChangedListener l) throws DataProviderException;
+    void removeBudgetChangedListener(BudgetChangedListener l);
 
     /**
      * Adds a {@link at.jku.win.ss15.pjse.backend.Category} to the database.
@@ -120,9 +119,17 @@ public interface DataProvider {
 
     /**
      * Should delete all Data
+     *
      * @throws DataProviderException
      */
     void reset() throws DataProviderException;
+
+    /**
+     * Checks if any listeners are attached
+     *
+     * @return true if it has listeners
+     */
+    boolean hasListeners();
 
     public static class DataProviderException extends Exception {
         public DataProviderException(String errorMessage) {

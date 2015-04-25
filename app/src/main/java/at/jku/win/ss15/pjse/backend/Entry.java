@@ -51,7 +51,7 @@ public class Entry implements Serializable {
         if (category == null)
             throw new NullPointerException("category must not be NULL");
         this.value = value;
-        this.startTime = startTime;
+        this.startTime = (Date) startTime.clone();
         this.category = category;
         intervalType = IntervalType.Once;
         interval = -1;
@@ -78,9 +78,15 @@ public class Entry implements Serializable {
         locLng = e.locLng;
         interval = e.interval;
         intervalType = e.intervalType;
-        startTime = e.startTime;
-        endTime = e.endTime;
-        intervalEndTime = e.intervalEndTime;
+        startTime = (Date) e.startTime.clone();
+        if (e.endTime == null)
+            endTime = null;
+        else
+            endTime = (Date) e.endTime.clone();
+        if (e.intervalEndTime == null)
+            intervalEndTime = null;
+        else
+            intervalEndTime = (Date) e.intervalEndTime.clone();
         category = e.category;
         parent = e.parent;
     }
