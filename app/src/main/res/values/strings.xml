@@ -12,4 +12,16 @@
     <string name="action_settings">Settings</string>
     <string name="addExpensure">Add expensure</string>
     <string name="add_widget">Add widget</string>
+
+    <string name="chooseName">Name: </string>
+    <string name="chooseBudget">Budget: </string>
+    <string name="chooseAmount">Amount: </string>
+    <string name="chooseDate">Date: </string>
+    <string name="chooseTime">Time: </string>
+    <string name="chooseFrequency">Frequency: </string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="title_activity_send_things">SendThings</string>
+    <string name="title_activity_create_entry_dialog">createEntryDialog</string>
+    <string name="title_activity_create_category_dialog">createCategoryDialog</string>
 </resources>
