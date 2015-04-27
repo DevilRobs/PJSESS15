@@ -91,4 +91,24 @@ public class createEntryDialog extends DialogFragment implements AdapterView.OnI
     }
 }
 
+/*
+Daten aus diesem Dialog können folgenderweise entnommen werden:
+        Intent intent = getIntent();
+        // Hier wird der Bundle aus dem intent rausgeholt
+        Bundle b = intent.getExtras();
+        //Und anschließend die ganzen Werte
+        double d = b.getDouble("amount");
+        int rep = b.getInt("rep");
+        String s1 = b.getString("time");
+        String s2 = b.getString("date");
+
+        //Um den Inhalt anzuzeigen
+        String message = s2 + s1 + d + rep;
+        TextView textView = new TextView(this);
+        textView.setTextSize(40);
+        textView.setText(message);
+        //"Es in die Abteilung layout schicken"
+        setContentView(textView);
+ */
+
 
