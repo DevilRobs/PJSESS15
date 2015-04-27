@@ -25,14 +25,14 @@ public class createCategoryDialog extends DialogFragment implements AdapterView.
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Der Layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        builder.setView(inflater.inflate(R.layout.activity_create_entry_dialog, null));
+        builder.setView(inflater.inflate(R.layout.activity_create_category_dialog, null));
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 
                 //Diese Zeile besagt wohin die Daten geschickt werden sollen, dass muss noch gemacht werden!
                 Intent nextScreen = new Intent(getActivity(), DisplayMessageActivity.class);
 
-               
+
                 inputAmount = (EditText) ((AlertDialog) dialog).findViewById(R.id.amount_editText);
                 inputName = (EditText) ((AlertDialog) dialog).findViewById(R.id.time_editText);
 
@@ -83,3 +83,23 @@ public class createCategoryDialog extends DialogFragment implements AdapterView.
         // Another interface callback
     }
 }
+
+/*
+Daten aus diesem Dialog können folgenderweise entnommen werden:
+        Intent intent = getIntent();
+        // Hier wird der Bundle aus dem intent rausgeholt
+        Bundle b = intent.getExtras();
+        //Und anschließend die ganzen Werte
+        double d = b.getDouble("amount");
+        int rep = b.getInt("rep");
+        String s1 = b.getString("time");
+        String s2 = b.getString("date");
+
+        //Um den Inhalt anzuzeigen
+        String message = s2 + s1 + d + rep;
+        TextView textView = new TextView(this);
+        textView.setTextSize(40);
+        textView.setText(message);
+        //"Es in die Abteilung layout schicken"
+        setContentView(textView);
+ */
